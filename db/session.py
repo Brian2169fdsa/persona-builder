@@ -12,10 +12,10 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql://localhost:5432/persona_builder",
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    print("⚠ DATABASE_URL not set — falling back to localhost (dev only)")
+    DATABASE_URL = "postgresql://localhost:5432/persona_builder"
 
 engine = create_engine(
     DATABASE_URL,

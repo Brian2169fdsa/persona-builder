@@ -91,4 +91,6 @@ def finalize_persona(db: Session, persona_id, status: str, *,
     persona.confidence_grade = confidence_grade
     persona.spec_valid = spec_valid
     persona.failure_reason = failure_reason
+    if status == "deployed":
+        persona.deployed_at = datetime.now(timezone.utc)
     db.flush()

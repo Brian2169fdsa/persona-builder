@@ -19,10 +19,12 @@ HTTP status codes:
   500 — internal pipeline error
 """
 
+import os
 from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -55,6 +57,19 @@ app = FastAPI(
     title="Persona Builder",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+# CORS — allow connect-hub and local dev
+_cors_origins = os.environ.get(
+    "CORS_ORIGINS",
+    "https://internal.manageai.io,http://localhost:8080,http://localhost:5173",
+).split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[o.strip() for o in _cors_origins],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

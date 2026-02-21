@@ -13,6 +13,8 @@ Output:
 Deterministic. No network calls. No AI reasoning.
 """
 
+import os
+
 
 # Tone → temperature mapping
 TONE_TEMPERATURE = {
@@ -64,8 +66,10 @@ def generate_openai_config(spec, system_prompt):
     # Frequency penalty to reduce repetition
     frequency_penalty = 0.3 if response_length == "concise" else 0.1
 
+    model = os.environ.get("OPENAI_MODEL", "gpt-4o")
+
     return {
-        "model": "gpt-4o",
+        "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
         ],
@@ -108,7 +112,7 @@ if __name__ == "__main__":
     prompt = generate_system_prompt(spec)
     config = generate_openai_config(spec, prompt)
 
-    assert config["model"] == "gpt-4o"
+    assert config["model"] == os.environ.get("OPENAI_MODEL", "gpt-4o")
     assert config["temperature"] == 0.5  # friendly → 0.5
     assert config["max_tokens"] == 512   # min(concise=512, max=800)
     assert config["top_p"] == 0.9        # friendly = creative

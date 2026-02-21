@@ -13,6 +13,8 @@ Output:
 Deterministic. No network calls. No AI reasoning.
 """
 
+import os
+
 
 # Tone → temperature mapping (Claude uses 0.0–1.0)
 TONE_TEMPERATURE = {
@@ -61,8 +63,10 @@ def generate_claude_config(spec, system_prompt):
     # Top_k for controlling diversity (lower = more focused)
     top_k = 40 if tone in ("casual", "playful", "friendly") else 20
 
+    model = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-20250514")
+
     return {
-        "model": "claude-sonnet-4-20250514",
+        "model": model,
         "max_tokens": max_tokens,
         "temperature": temperature,
         "top_k": top_k,
@@ -102,7 +106,7 @@ if __name__ == "__main__":
     prompt = generate_system_prompt(spec)
     config = generate_claude_config(spec, prompt)
 
-    assert config["model"] == "claude-sonnet-4-20250514"
+    assert config["model"] == os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-20250514")
     assert config["temperature"] == 0.5
     assert config["max_tokens"] == 512
     assert config["top_k"] == 40  # friendly = creative
