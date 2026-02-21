@@ -1,6 +1,5 @@
 [build]
 builder = "nixpacks"
-dockerfilePath = ""
 
 [deploy]
 healthcheckPath = "/health"
